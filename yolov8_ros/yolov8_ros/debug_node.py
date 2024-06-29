@@ -289,7 +289,7 @@ class DebugNode(LifecycleNode):
         # publish dbg image
         msg = DetectionInFrame()
         msg.detection_image = self.cv_bridge.cv2_to_imgmsg(cv_image,encoding=img_msg.encoding)
-        msg.detections = detection_msg
+        msg.detections = list[detection_msg.detections]
 
         self._detection_in_frame_pub.publish(msg)
         self._bb_markers_pub.publish(bb_marker_array)
