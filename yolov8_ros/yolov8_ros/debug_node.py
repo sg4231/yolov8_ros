@@ -41,6 +41,7 @@ from yolov8_msgs.msg import KeyPoint2D
 from yolov8_msgs.msg import KeyPoint3D
 from yolov8_msgs.msg import Detection
 from yolov8_msgs.msg import DetectionArray
+from yolov8_msgs.msg import DetectionInFrame
 
 
 class DebugNode(LifecycleNode):
@@ -70,6 +71,7 @@ class DebugNode(LifecycleNode):
 
         # pubs
         self._dbg_pub = self.create_publisher(Image, "dbg_image", 10)
+        self._detection_in_frame_pub = self.create_publisher(DetectionInFrame, "detection_in_frame", 10)
         self._bb_markers_pub = self.create_publisher(
             MarkerArray, "dgb_bb_markers", 10)
         self._kp_markers_pub = self.create_publisher(
@@ -106,6 +108,7 @@ class DebugNode(LifecycleNode):
         self.get_logger().info(f"Cleaning up {self.get_name()}")
 
         self.destroy_publisher(self._dbg_pub)
+        self.destroy_publisher(self._detection_in_frame_pub)
         self.destroy_publisher(self._bb_markers_pub)
         self.destroy_publisher(self._kp_markers_pub)
 
@@ -284,8 +287,11 @@ class DebugNode(LifecycleNode):
                     kp_marker_array.markers.append(marker)
 
         # publish dbg image
-        self._dbg_pub.publish(self.cv_bridge.cv2_to_imgmsg(cv_image,
-                                                           encoding=img_msg.encoding))
+        msg = DetectionInFrame()
+        msg.detection_image = self.cv_bridge.cv2_to_imgmsg(cv_image,encoding=img_msg.encoding)
+        msg.detections = detection_msg
+
+        self._detection_in_frame_pub.publish(msg)
         self._bb_markers_pub.publish(bb_marker_array)
         self._kp_markers_pub.publish(kp_marker_array)
 
