@@ -260,13 +260,10 @@ class DebugNode(LifecycleNode):
             # random color
             label = detection.class_name
 
-            if label not in self._class_to_color:
-                r = random.randint(0, 255)
-                g = random.randint(0, 255)
-                b = random.randint(0, 255)
-                self._class_to_color[label] = (r, g, b)
-
-            color = self._class_to_color[label]
+            if (label == "person"):
+                color = (255, 0, 255)
+            else:
+                color = (255, 165, 0)
 
             cv_image = self.draw_box(cv_image, detection, color)
             cv_image = self.draw_mask(cv_image, detection, color)
