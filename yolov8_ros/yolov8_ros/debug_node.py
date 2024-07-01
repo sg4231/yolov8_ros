@@ -285,6 +285,7 @@ class DebugNode(LifecycleNode):
 
         # publish dbg image
         msg = DetectionInFrame()
+        msg.header.stamp = img_msg.header.stamp
         msg.detection_image = self.cv_bridge.cv2_to_imgmsg(cv_image,encoding=img_msg.encoding)
         msg.detections = list(detection_msg.detections)
 
